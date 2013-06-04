@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="actionbar_separator">#2f5378</color>
+    <color name="actionbar_background_start">#4c82b7</color>
+    <color name="actionbar_background_end">#4478aa</color>
+    <color name="actionbar_background_item_pressed_start">#4478aa</color>
+    <color name="actionbar_background_item_pressed_end">#4c82b7</color>
+    <color name="sign_in_with_gplus">#e46044</color>
+    <color name="sign_in_with_gplus_pressed">#e04929</color>
+    <color name="sign_in_with_facebook">#4a6ea9</color>
+    <color name="sign_in_with_facebook_pressed">#416094</color>
+    <color name="sign_in_with_twitter">#31ddf3</color>
+    <color name="sign_in_with_twitter_pressed">#0dcae2</color>
+    <color name="black_overlay">#66000000</color>
+
+</resources>

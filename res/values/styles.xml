@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="Theme.App" parent="@style/Theme.Sherlock.Light">
+        <item name="actionBarStyle">@style/Style.ActionBar</item>
+        <item name="android:actionBarStyle">@style/Style.ActionBar</item>
+        <item name="actionMenuTextColor">@android:color/white</item>
+        <item name="actionBarDivider">@null</item>
+    </style>
+
+    <style name="Theme.Auth" parent="@style/Theme.Sherlock.Light.NoActionBar">
+        <item name="android:background">@color/actionbar_background_start</item>
+        <item name="android:textColor">#ffffff</item>
+    </style>
+
+    <style name="Style.ActionBar" parent="Widget.Sherlock.Light.ActionBar.Solid">
+        <item name="titleTextStyle">@style/Style.ActionBar.TitleTextStyle</item>
+        <item name="android:titleTextStyle">@style/Style.ActionBar.TitleTextStyle</item>
+        <item name="android:textColor">#ffffff</item>
+        <item name="background">@color/actionbar_background_start</item>
+        <item name="android:background">@color/actionbar_background_start</item>
+    </style>
+
+    <style name="Style.ActionBar.TitleTextStyle" parent="TextAppearance.Sherlock.Widget.ActionBar.Title">
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="FullscreenTheme" parent="android:Theme.NoTitleBar">
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowBackground">@null</item>
+        <item name="buttonBarStyle">@style/ButtonBar</item>
+        <item name="buttonBarButtonStyle">@style/ButtonBarButton</item>
+    </style>
+
+    <style name="ButtonBar">
+        <item name="android:paddingLeft">2dp</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingRight">2dp</item>
+        <item name="android:paddingBottom">0dp</item>
+        <item name="android:background">@android:drawable/bottom_bar</item>
+    </style>
+
+    <style name="ButtonBarButton" />
+
+</resources>

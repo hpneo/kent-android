@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Kent</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_auth">Sign in Kent</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="sign_in_gplus">Sign in with Google+</string>
+    <string name="sign_in_facebook">Sign in with Facebook</string>
+    <string name="sign_in_twitter">Sign in with Twitter</string>
+    <string name="plus_generic_error">Sign in with Google is not available.</string>
+    <string name="progress_message">Signing in to Google&#8230;</string>
+    <string name="title_activity_web_auth">WebAuthActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+
+</resources>
