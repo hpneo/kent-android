@@ -4,11 +4,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
-import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.webkit.CookieManager;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.*;
@@ -16,7 +19,7 @@ import android.widget.*;
 public class AuthActivity extends Activity implements OnClickListener {
   private WebView webview;
   private String authURL;
-  String CALLBACK_ROOT_URL = "http://kent.herokuapp.com";
+  static final String CALLBACK_ROOT_URL = "http://kent.herokuapp.com";
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -40,16 +43,22 @@ public class AuthActivity extends Activity implements OnClickListener {
     buttonSignInWithTwitter.setOnClickListener(this);
 
     webview = (WebView) findViewById(R.id.webview);
-    hackWebView();
+    configWebView();
+  }
+  
+  private void handleAuthResponse(String provider, String auth_token) {
+    SharedPreferences preferences = getSharedPreferences("KentPreferences", MODE_PRIVATE);
+    SharedPreferences.Editor preferencesEditor = preferences.edit();
+    preferencesEditor.putString("auth_token", auth_token);
+    preferencesEditor.commit();
+    
+    Intent intent = new Intent(this, MainActivity.class);
+    intent.putExtra("activityCaller", "AuthActivity");
+    this.startActivity(intent);
+    
+    finish();
   }
 
-  @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
-    getMenuInflater().inflate(R.menu.auth, menu);
-    return true;
-  }
-
-  @SuppressLint("SetJavaScriptEnabled")
   @Override
   public void onClick(View view) {
     switch (view.getId()) {
@@ -64,38 +73,21 @@ public class AuthActivity extends Activity implements OnClickListener {
       break;
     }
 
-    Toast.makeText(getApplicationContext(), this.authURL, Toast.LENGTH_LONG)
-        .show();
-
-    webview.getSettings().setJavaScriptEnabled(true);
+    CookieManager cookieManager = CookieManager.getInstance();
+    cookieManager.removeAllCookie();
+    
     webview.loadUrl(this.authURL);
     webview.setVisibility(View.VISIBLE);
     webview.bringToFront();
   }
 
-  private void handleAuthResponse(String provider, String uid) {
-    Toast.makeText(getApplicationContext(), provider + " : " + uid,
-        Toast.LENGTH_LONG).show();
-
-    // SharedPreferences preferences =
-    // getSharedPreferences("KentPreferences",
-    // MODE_PRIVATE);
-    // SharedPreferences.Editor preferencesEditor = preferences.edit();
-    //
-    // preferencesEditor.putBoolean("signed_in", true);
-    //
-    // preferencesEditor.commit();
-    //
-    // Context context = view.getContext();
-    // Intent intent = new Intent(getApplicationContext(),
-    // MainActivity.class);
-    // intent.putExtra("activityCaller", "AuthActivity");
-    //
-    // context.startActivity(intent);
-    // finish();
-  }
-
-  private void hackWebView() {
+  @SuppressLint("SetJavaScriptEnabled")
+  private void configWebView() {
+    WebSettings webSettings = webview.getSettings();
+    webSettings.setJavaScriptEnabled(true);
+    webSettings.setSavePassword(false);
+    webSettings.setSaveFormData(false);
+    
     this.webview.setVisibility(View.GONE);
     this.webview.requestFocus(View.FOCUS_DOWN);
     this.webview.setOnTouchListener(new View.OnTouchListener() {
@@ -117,17 +109,12 @@ public class AuthActivity extends Activity implements OnClickListener {
       @Override
       public void onPageFinished(WebView view, String url) {
         Uri uri = Uri.parse(url);
-        
-        if (url.startsWith(CALLBACK_ROOT_URL)) {
-          Toast.makeText(getApplicationContext(), url, Toast.LENGTH_LONG).show();
-        }
-        
-        if (url.startsWith(CALLBACK_ROOT_URL + "/users/token")) {
 
+        if (url.startsWith(CALLBACK_ROOT_URL + "/users/token")) {
           String provider = uri.getQueryParameter("provider");
-          String token = uri.getQueryParameter("user_token");
+          String auth_token = uri.getQueryParameter("user_token");
           
-          handleAuthResponse(provider, token);
+          handleAuthResponse(provider, auth_token);
           
           webview.setVisibility(View.GONE);
         }

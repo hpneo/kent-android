@@ -937,12 +937,14 @@ containing a value of this type.
         public static final int background_sign_in_with_twitter_pressed=0x7f020075;
         public static final int facebook=0x7f020076;
         public static final int gplus=0x7f020077;
-        public static final int ic_launcher=0x7f020078;
-        public static final int refresh=0x7f020079;
-        public static final int selector_sign_in_with_facebook=0x7f02007a;
-        public static final int selector_sign_in_with_google=0x7f02007b;
-        public static final int selector_sign_in_with_twitter=0x7f02007c;
-        public static final int twitter=0x7f02007d;
+        public static final int ic_action_add=0x7f020078;
+        public static final int ic_action_menu=0x7f020079;
+        public static final int ic_action_refresh=0x7f02007a;
+        public static final int ic_launcher=0x7f02007b;
+        public static final int selector_sign_in_with_facebook=0x7f02007c;
+        public static final int selector_sign_in_with_google=0x7f02007d;
+        public static final int selector_sign_in_with_twitter=0x7f02007e;
+        public static final int twitter=0x7f02007f;
     }
     public static final class id {
         public static final int abs__action_bar=0x7f040020;
@@ -1034,8 +1036,7 @@ containing a value of this type.
         public static final int sherlock_spinner_item=0x7f030018;
     }
     public static final class menu {
-        public static final int auth=0x7f0b0000;
-        public static final int main=0x7f0b0001;
+        public static final int main=0x7f0b0000;
     }
     public static final class string {
         /**  Content description for the action bar "home" affordance. [CHAR LIMIT=NONE] 
