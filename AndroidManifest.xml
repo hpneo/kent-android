@@ -34,12 +34,6 @@
             android:noHistory="true"
             android:theme="@style/Theme.Auth" >
         </activity>
-        <activity
-            android:name="com.kent.WebAuthActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_web_auth"
-            android:theme="@style/FullscreenTheme" >
-        </activity>
     </application>
 
 </manifest>

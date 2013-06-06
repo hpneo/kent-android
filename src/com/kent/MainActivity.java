@@ -7,17 +7,23 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.Window;
+import com.kent.adapters.FeedItemAdapter;
+import com.kent.interfaces.OnTaskCompleted;
 import com.kent.models.Feed;
 import com.kent.tasks.FeedTask;
 
 import android.os.Bundle;
+import android.widget.ListView;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
-public class MainActivity extends SherlockActivity {
+public class MainActivity extends SherlockActivity implements OnTaskCompleted {
   public ActionBar actionBar = null;
+  public ListView listViewfeedList = null;
   public MenuItem refreshAction = null;
   public SharedPreferences preferences;
+  
+  public FeedItemAdapter feedItemAdapter = null;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +37,8 @@ public class MainActivity extends SherlockActivity {
     if (preferences.contains("auth_token")) {
       setContentView(R.layout.activity_main);
       
+      this.listViewfeedList = (ListView) this.findViewById(R.id.feedList);
+      
       this.actionBar = this.getSupportActionBar();
       this.actionBar.setTitle("KENT");
       this.actionBar.setHomeButtonEnabled(true);
@@ -38,6 +46,13 @@ public class MainActivity extends SherlockActivity {
       this.actionBar.setDisplayShowHomeEnabled(true);
       
       this.setSupportProgressBarIndeterminateVisibility(false);
+      
+      this.feedItemAdapter = new FeedItemAdapter(this, R.layout.list_item_feed, new ArrayList<Feed>());
+      this.feedItemAdapter.setNotifyOnChange(true);
+      
+      if (!this.listViewfeedList.equals(null)) {
+        this.listViewfeedList.setAdapter(feedItemAdapter);
+      }
     }
     else {
       Intent intent = new Intent(getApplicationContext(), AuthActivity.class);
@@ -46,8 +61,19 @@ public class MainActivity extends SherlockActivity {
       this.finish();
     }
   }
-  
-  public void populateFeedList(ArrayList<Feed> feedList) {
+
+  @Override
+  @SuppressWarnings("unchecked")
+  public void onTaskCompleted(Object result) {
+    ArrayList<Feed> feedList = (ArrayList<Feed>) result;
+
+    this.feedItemAdapter.clear();
+    
+    for (Feed feed : feedList) {
+      this.feedItemAdapter.add(feed);
+    }
+    // Toast.makeText(getApplicationContext(), feedList.size() + " feeds loaded", Toast.LENGTH_LONG).show();
+    
     refreshAction.setVisible(true);
     setSupportProgressBarIndeterminateVisibility(false);
   }

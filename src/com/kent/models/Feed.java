@@ -15,6 +15,7 @@ public class Feed implements Serializable {
   public String description;
   public String url;
   public String homeURL;
+  public int postsCounter;
   
   public static Feed fromJSON(JSONObject jsonItem) throws JSONException {
     Feed item = new Feed();
@@ -24,6 +25,7 @@ public class Feed implements Serializable {
     item.description = jsonItem.getString("description");
     item.url = jsonItem.getString("url");
     item.homeURL = jsonItem.getString("home_url");
+    item.postsCounter = 100;// jsonItem.getInt("posts_counter");
     
     return item;
   }

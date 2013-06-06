@@ -10,8 +10,7 @@
     <string name="sign_in_twitter">Sign in with Twitter</string>
     <string name="plus_generic_error">Sign in with Google is not available.</string>
     <string name="progress_message">Signing in to Google&#8230;</string>
-    <string name="title_activity_web_auth">WebAuthActivity</string>
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="dummy_list_item_feed_name">Feed Name</string>
+    <string name="dummy_list_item_feed_posts_counter">100</string>
 
 </resources>

@@ -5,17 +5,17 @@ import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import com.kent.interfaces.OnTaskCompleted;
 import com.kent.models.Feed;
 import com.kent.utils.RestClient.RequestMethod;
 import com.kent.utils.RestClient;
-import com.kent.MainActivity;
 
 import android.os.AsyncTask;
 
 public class FeedTask extends AsyncTask<String, Void, String> {
-  private MainActivity activityCaller;
+  private OnTaskCompleted activityCaller;
   
-  public FeedTask(MainActivity activityCaller) {
+  public FeedTask(OnTaskCompleted activityCaller) {
     this.activityCaller = activityCaller;
   }
 
@@ -35,7 +35,7 @@ public class FeedTask extends AsyncTask<String, Void, String> {
     try {
       ArrayList<Feed> feedList = Feed.fromJSON(new JSONArray(result));
       
-      activityCaller.populateFeedList(feedList);
+      activityCaller.onTaskCompleted(feedList);
     } catch (JSONException e) {
       System.out.println(e.getMessage());
     }
