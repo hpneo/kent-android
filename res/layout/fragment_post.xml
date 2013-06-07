@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+   android:layout_width="fill_parent"
+   android:layout_height="wrap_content"
+   android:orientation="vertical">
+   
+    <TextView
+        android:id="@+id/textview_post_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/dummy_list_item_feed_name"
+        android:textSize="18sp"
+        android:padding="8dp" />
+
+    <WebView
+        android:id="@+id/webview_post_content"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/textview_post_title" />
+    
+</RelativeLayout>

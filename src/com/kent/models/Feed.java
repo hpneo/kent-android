@@ -12,7 +12,7 @@ public class Feed implements Serializable {
 
   public int id;
   public String title;
-  public String description;
+  // public String description;
   public String url;
   public String homeURL;
   public int postsCounter;
@@ -22,10 +22,10 @@ public class Feed implements Serializable {
     
     item.id = jsonItem.getInt("id");
     item.title = jsonItem.getString("title");
-    item.description = jsonItem.getString("description");
+    // item.description = jsonItem.getString("description");
     item.url = jsonItem.getString("url");
     item.homeURL = jsonItem.getString("home_url");
-    item.postsCounter = 100;// jsonItem.getInt("posts_counter");
+    item.postsCounter = jsonItem.getInt("posts_counter");
     
     return item;
   }

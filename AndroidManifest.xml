@@ -34,6 +34,14 @@
             android:noHistory="true"
             android:theme="@style/Theme.Auth" >
         </activity>
+        <activity
+            android:name="com.kent.FeedActivity"
+            android:label="@string/title_activity_feed"
+            android:parentActivityName="com.kent.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.kent.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

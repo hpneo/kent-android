@@ -12,5 +12,6 @@
     <string name="progress_message">Signing in to Google&#8230;</string>
     <string name="dummy_list_item_feed_name">Feed Name</string>
     <string name="dummy_list_item_feed_posts_counter">100</string>
+    <string name="title_activity_feed">FeedActivity</string>
 
 </resources>

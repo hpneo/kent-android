@@ -9,6 +9,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.Window;
 import com.kent.adapters.FeedItemAdapter;
 import com.kent.interfaces.TaskListener;
+import com.kent.listeners.FeedItemClickListener;
 import com.kent.models.Error;
 import com.kent.models.Feed;
 import com.kent.tasks.FeedTask;
@@ -37,27 +38,32 @@ public class MainActivity extends SherlockActivity implements TaskListener {
     this.preferences = getSharedPreferences("KentPreferences", MODE_PRIVATE);
     
     if (this.preferences.contains("auth_token")) {
-      setContentView(R.layout.activity_main);
-      
-      this.listViewfeedList = (ListView) this.findViewById(R.id.feedList);
-      
-      this.actionBar = this.getSupportActionBar();
-      this.actionBar.setTitle("KENT");
-      this.actionBar.setHomeButtonEnabled(true);
-      // this.actionBar.setDisplayHomeAsUpEnabled(true); // Only for children activities 
-      this.actionBar.setDisplayShowHomeEnabled(true);
-      
-      this.setSupportProgressBarIndeterminateVisibility(false);
-      
-      this.feedItemAdapter = new FeedItemAdapter(this, R.layout.list_item_feed, new ArrayList<Feed>());
-      this.feedItemAdapter.setNotifyOnChange(true);
-      
-      if (!this.listViewfeedList.equals(null)) {
-        this.listViewfeedList.setAdapter(feedItemAdapter);
-      }
+      showMain();
     }
     else {
       showAuth();
+    }
+  }
+  
+  private void showMain() {
+    setContentView(R.layout.activity_main);
+    
+    this.listViewfeedList = (ListView) this.findViewById(R.id.feedList);
+    
+    this.actionBar = this.getSupportActionBar();
+    this.actionBar.setTitle("KENT");
+    this.actionBar.setHomeButtonEnabled(true);
+    // this.actionBar.setDisplayHomeAsUpEnabled(true); // Only for children activities 
+    this.actionBar.setDisplayShowHomeEnabled(true);
+    
+    this.setSupportProgressBarIndeterminateVisibility(false);
+    
+    this.feedItemAdapter = new FeedItemAdapter(this, R.layout.list_item_feed, new ArrayList<Feed>());
+    this.feedItemAdapter.setNotifyOnChange(true);
+    
+    if (!this.listViewfeedList.equals(null)) {
+      this.listViewfeedList.setAdapter(feedItemAdapter);
+      this.listViewfeedList.setOnItemClickListener(new FeedItemClickListener());
     }
   }
   
@@ -114,7 +120,6 @@ public class MainActivity extends SherlockActivity implements TaskListener {
     for (Feed feed : feedList) {
       this.feedItemAdapter.add(feed);
     }
-    // Toast.makeText(getApplicationContext(), feedList.size() + " feeds loaded", Toast.LENGTH_LONG).show();
     
     refreshAction.setVisible(true);
     setSupportProgressBarIndeterminateVisibility(false);

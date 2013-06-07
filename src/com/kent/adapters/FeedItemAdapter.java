@@ -35,6 +35,13 @@ public class FeedItemAdapter extends ArrayAdapter<Feed> {
     if (!feed.equals(null)) {
       feedName.setText(feed.title);
       feedPostsCounter.setText(feed.postsCounter + "");
+      
+      if (feed.postsCounter == 0) {
+        feedPostsCounter.setVisibility(View.INVISIBLE);
+      }
+      else {
+        feedPostsCounter.setVisibility(View.VISIBLE);
+      }
     }
     
     return view;
