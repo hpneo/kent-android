@@ -5,12 +5,10 @@ import java.util.ArrayList;
 import com.kent.fragments.PostFragment;
 import com.kent.models.Post;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.*;
 
-public class PostsPagerAdapter extends FragmentPagerAdapter {
-  public ArrayList<String> posts;
+public class PostsPagerAdapter extends FragmentStatePagerAdapter {
+  public ArrayList<Post> posts;
   
   public PostsPagerAdapter(FragmentManager fragmentManager) {
     super(fragmentManager);
@@ -18,12 +16,7 @@ public class PostsPagerAdapter extends FragmentPagerAdapter {
 
   @Override
   public Fragment getItem(int position) {
-    String postString = this.posts.get(position);
-    
-    Post post = new Post();
-    post.title = postString;
-    
-    return PostFragment.newInstance(post);
+    return PostFragment.newInstance(this.posts.get(position));
   }
 
   @Override
@@ -32,7 +25,7 @@ public class PostsPagerAdapter extends FragmentPagerAdapter {
   }
   
   @Override
-  public String getPageTitle(int position) {
-      return this.posts.get(position);
+  public CharSequence getPageTitle(int position) {
+      return this.posts.get(position).title;
   }
 }

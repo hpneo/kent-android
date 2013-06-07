@@ -997,7 +997,7 @@ containing a value of this type.
         public static final int abs__textButton=0x7f040013;
         public static final int abs__title=0x7f04001b;
         public static final int abs__up=0x7f04000b;
-        public static final int action_settings=0x7f04003e;
+        public static final int action_settings=0x7f04003f;
         public static final int button_sign_in_with_facebook=0x7f040036;
         public static final int button_sign_in_with_google=0x7f040035;
         public static final int button_sign_in_with_twitter=0x7f040037;
@@ -1006,8 +1006,8 @@ containing a value of this type.
         public static final int feedList=0x7f040039;
         public static final int homeAsUp=0x7f040006;
         public static final int listMode=0x7f040002;
-        public static final int list_item_feed_name=0x7f04003c;
-        public static final int list_item_feed_posts_counter=0x7f04003d;
+        public static final int list_item_feed_name=0x7f04003d;
+        public static final int list_item_feed_posts_counter=0x7f04003e;
         public static final int normal=0x7f040001;
         public static final int showCustom=0x7f040008;
         public static final int showHome=0x7f040005;
@@ -1015,11 +1015,12 @@ containing a value of this type.
         public static final int sign_in_buttons_collection=0x7f040034;
         public static final int tabMode=0x7f040003;
         public static final int textViewAuthHeader=0x7f040033;
+        public static final int textview_post_author=0x7f04003b;
         public static final int textview_post_title=0x7f04003a;
         public static final int useLogo=0x7f040004;
         public static final int viewPagerFeedPosts=0x7f040038;
         public static final int webview=0x7f040032;
-        public static final int webview_post_content=0x7f04003b;
+        public static final int webview_post_content=0x7f04003c;
         public static final int wrap_content=0x7f040000;
     }
     public static final class integer {

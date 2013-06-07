@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockFragment;
@@ -34,12 +35,16 @@ public class PostFragment extends SherlockFragment {
     View view = inflater.inflate(R.layout.fragment_post, container, false);
     
     TextView textViewPostTitle = (TextView) view.findViewById(R.id.textview_post_title);
+    TextView textViewPostAuthor = (TextView) view.findViewById(R.id.textview_post_author);
+    WebView webViewPostContent = (WebView) view.findViewById(R.id.webview_post_content);
     
     if (this.post == null) {
       textViewPostTitle.setText("No post");
     }
     else {
       textViewPostTitle.setText(this.post.title);
+      textViewPostAuthor.setText(this.post.author);
+      webViewPostContent.loadData(this.post.description, "text/html", "UTF-8");
     }
     
     return view;

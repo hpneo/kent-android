@@ -9,13 +9,30 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/dummy_list_item_feed_name"
-        android:textSize="18sp"
-        android:padding="8dp" />
+        android:textSize="20sp"
+        android:paddingTop="4dp"
+        android:paddingBottom="0dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:textStyle="bold" />
+   
+    <TextView
+        android:id="@+id/textview_post_author"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textview_post_title"
+        android:text="@string/dummy_list_item_feed_name"
+        android:textSize="12sp"
+        android:paddingTop="0dp"
+        android:paddingBottom="4dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:textColor="#666666" />
 
     <WebView
         android:id="@+id/webview_post_content"
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/textview_post_title" />
+        android:layout_below="@+id/textview_post_author" />
     
 </RelativeLayout>

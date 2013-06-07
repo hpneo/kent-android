@@ -1,7 +1,9 @@
 package com.kent.models;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -28,5 +30,20 @@ public class Post implements Serializable {
     item.publishedAt = jsonItem.getLong("published_at_timestamp");
     
     return item;
+  }
+  
+  public static ArrayList<Post> fromJSON(JSONArray jsonCollection) throws JSONException {
+    ArrayList<Post> collection = new ArrayList<Post>();
+    
+    int count = jsonCollection.length(),
+        i = 0;
+    
+    for(i = 0; i < count; i++) {
+      Post item = Post.fromJSON((JSONObject) jsonCollection.get(i));
+      
+      collection.add(item);
+    }
+    
+    return collection;
   }
 }
