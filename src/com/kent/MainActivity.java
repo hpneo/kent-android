@@ -8,16 +8,18 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.Window;
 import com.kent.adapters.FeedItemAdapter;
-import com.kent.interfaces.OnTaskCompleted;
+import com.kent.interfaces.TaskListener;
+import com.kent.models.Error;
 import com.kent.models.Feed;
 import com.kent.tasks.FeedTask;
 
 import android.os.Bundle;
 import android.widget.ListView;
+import android.widget.Toast;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
-public class MainActivity extends SherlockActivity implements OnTaskCompleted {
+public class MainActivity extends SherlockActivity implements TaskListener {
   public ActionBar actionBar = null;
   public ListView listViewfeedList = null;
   public MenuItem refreshAction = null;
@@ -32,9 +34,9 @@ public class MainActivity extends SherlockActivity implements OnTaskCompleted {
     
     super.onCreate(savedInstanceState);
     
-    preferences = getSharedPreferences("KentPreferences", MODE_PRIVATE);
+    this.preferences = getSharedPreferences("KentPreferences", MODE_PRIVATE);
     
-    if (preferences.contains("auth_token")) {
+    if (this.preferences.contains("auth_token")) {
       setContentView(R.layout.activity_main);
       
       this.listViewfeedList = (ListView) this.findViewById(R.id.feedList);
@@ -55,27 +57,15 @@ public class MainActivity extends SherlockActivity implements OnTaskCompleted {
       }
     }
     else {
-      Intent intent = new Intent(getApplicationContext(), AuthActivity.class);
-      intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-      this.startActivity(intent);
-      this.finish();
+      showAuth();
     }
   }
-
-  @Override
-  @SuppressWarnings("unchecked")
-  public void onTaskCompleted(Object result) {
-    ArrayList<Feed> feedList = (ArrayList<Feed>) result;
-
-    this.feedItemAdapter.clear();
-    
-    for (Feed feed : feedList) {
-      this.feedItemAdapter.add(feed);
-    }
-    // Toast.makeText(getApplicationContext(), feedList.size() + " feeds loaded", Toast.LENGTH_LONG).show();
-    
-    refreshAction.setVisible(true);
-    setSupportProgressBarIndeterminateVisibility(false);
+  
+  private void showAuth() {
+    Intent intent = new Intent(getApplicationContext(), AuthActivity.class);
+    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    this.startActivity(intent);
+    this.finish();
   }
   
   @Override
@@ -112,5 +102,42 @@ public class MainActivity extends SherlockActivity implements OnTaskCompleted {
 //    subMenu1Item.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
 
     return super.onCreateOptionsMenu(menu);
+  }
+
+  @Override
+  @SuppressWarnings("unchecked")
+  public void onTaskCompleted(Object result) {
+    ArrayList<Feed> feedList = (ArrayList<Feed>) result;
+
+    this.feedItemAdapter.clear();
+    
+    for (Feed feed : feedList) {
+      this.feedItemAdapter.add(feed);
+    }
+    // Toast.makeText(getApplicationContext(), feedList.size() + " feeds loaded", Toast.LENGTH_LONG).show();
+    
+    refreshAction.setVisible(true);
+    setSupportProgressBarIndeterminateVisibility(false);
+  }
+
+  @Override
+  public void onTaskError(Object result) {
+    Error error = (Error) result;
+    Toast.makeText(getApplicationContext(), error.message, Toast.LENGTH_LONG).show();
+    
+    refreshAction.setVisible(true);
+    setSupportProgressBarIndeterminateVisibility(false);
+    
+    if (error.code.equals("api_error") && error.message.equals("Invalid authentication token.")) {
+      showAuth();
+    }
+  }
+
+  @Override
+  public void onTaskCancelled(Object result) {
+    Toast.makeText(getApplicationContext(), (String) result, Toast.LENGTH_LONG).show();
+    
+    refreshAction.setVisible(true);
+    setSupportProgressBarIndeterminateVisibility(false);
   }
 }
