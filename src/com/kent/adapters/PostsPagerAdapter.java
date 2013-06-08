@@ -9,6 +9,7 @@ import android.support.v4.app.*;
 
 public class PostsPagerAdapter extends FragmentStatePagerAdapter {
   public ArrayList<Post> posts;
+  public String content_layout;
   
   public PostsPagerAdapter(FragmentManager fragmentManager) {
     super(fragmentManager);
@@ -16,7 +17,9 @@ public class PostsPagerAdapter extends FragmentStatePagerAdapter {
 
   @Override
   public Fragment getItem(int position) {
-    return PostFragment.newInstance(this.posts.get(position));
+    PostFragment fragment = PostFragment.newInstance(this.posts.get(position));
+    fragment.content_layout = this.content_layout;
+    return fragment;
   }
 
   @Override

@@ -13,6 +13,7 @@ import com.kent.models.Post;
 
 public class PostFragment extends SherlockFragment {
   public Post post = null;
+  public String content_layout = null;
   
   public static PostFragment newInstance(Post post) {
     PostFragment postFragment = new PostFragment();
@@ -44,7 +45,9 @@ public class PostFragment extends SherlockFragment {
     else {
       textViewPostTitle.setText(this.post.title);
       textViewPostAuthor.setText(this.post.author);
-      webViewPostContent.loadData(this.post.description, "text/html", "UTF-8");
+      
+      String content = content_layout.replace("{{post_content}}", this.post.description);
+      webViewPostContent.loadDataWithBaseURL("", content, "text/html", "utf-8", "");
     }
     
     return view;
