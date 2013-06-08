@@ -9,6 +9,7 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.SubMenu;
+import com.actionbarsherlock.view.Window;
 import com.kent.adapters.PostsPagerAdapter;
 import com.kent.interfaces.TaskListener;
 import com.kent.models.Error;
@@ -35,6 +36,9 @@ public class FeedActivity extends SherlockFragmentActivity implements TaskListen
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
+    requestWindowFeature(Window.FEATURE_PROGRESS);
+    requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+    
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_feed);
     
@@ -47,6 +51,8 @@ public class FeedActivity extends SherlockFragmentActivity implements TaskListen
     this.actionBar.setHomeButtonEnabled(true);
     this.actionBar.setDisplayHomeAsUpEnabled(true);
     this.actionBar.setDisplayShowHomeEnabled(true);
+    
+    this.setSupportProgressBarIndeterminateVisibility(false);
     
     this.viewPagerFeedPosts = (ViewPager) this.findViewById(R.id.viewPagerFeedPosts);
     
@@ -71,7 +77,14 @@ public class FeedActivity extends SherlockFragmentActivity implements TaskListen
     
     this.viewPagerFeedPosts.setAdapter(this.viewPagerFeedPostsAdapter);
     
+    loadPosts();
+  }
+  
+  private void loadPosts() {
     setSupportProgressBarIndeterminateVisibility(true);
+    if (refreshAction != null) {
+      refreshAction.setVisible(false);
+    }
     PostTask postTask = new PostTask(this);
     postTask.execute("http://kent.herokuapp.com/feeds/" + feed.id + "/posts.json?only_unread=true&auth_token=" + preferences.getString("auth_token", null));
   }
@@ -86,6 +99,14 @@ public class FeedActivity extends SherlockFragmentActivity implements TaskListen
     refreshAction = menu.add("Refresh");
     refreshAction.setIcon(R.drawable.ic_action_refresh);
     refreshAction.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+    refreshAction.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+      
+      @Override
+      public boolean onMenuItemClick(MenuItem item) {
+        loadPosts();
+        return false;
+      }
+    });
     
     MenuItem shareAction = menu.add("Share");
     shareAction.setIcon(R.drawable.ic_action_share);

@@ -45,6 +45,20 @@ public class MainActivity extends SherlockActivity implements TaskListener {
     }
   }
   
+  @Override
+  protected void onStart() {
+    this.feedItemAdapter = new FeedItemAdapter(this, R.layout.list_item_feed, new ArrayList<Feed>());
+    this.feedItemAdapter.setNotifyOnChange(true);
+    
+    if (!this.listViewfeedList.equals(null)) {
+      this.listViewfeedList.setAdapter(feedItemAdapter);
+      this.listViewfeedList.setOnItemClickListener(new FeedItemClickListener());
+    }
+    
+    loadFeeds();
+    super.onStart();
+  }
+  
   private void showMain() {
     setContentView(R.layout.activity_main);
     
@@ -57,14 +71,6 @@ public class MainActivity extends SherlockActivity implements TaskListener {
     this.actionBar.setDisplayShowHomeEnabled(true);
     
     this.setSupportProgressBarIndeterminateVisibility(false);
-    
-    this.feedItemAdapter = new FeedItemAdapter(this, R.layout.list_item_feed, new ArrayList<Feed>());
-    this.feedItemAdapter.setNotifyOnChange(true);
-    
-    if (!this.listViewfeedList.equals(null)) {
-      this.listViewfeedList.setAdapter(feedItemAdapter);
-      this.listViewfeedList.setOnItemClickListener(new FeedItemClickListener());
-    }
   }
   
   private void showAuth() {
@@ -72,6 +78,16 @@ public class MainActivity extends SherlockActivity implements TaskListener {
     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
     this.startActivity(intent);
     this.finish();
+  }
+  
+  private void loadFeeds() {
+    setSupportProgressBarIndeterminateVisibility(true);
+    if (refreshAction != null) {
+      refreshAction.setVisible(false);
+    }
+    
+    FeedTask feedTask = new FeedTask(this);
+    feedTask.execute("http://kent.herokuapp.com/feeds.json?auth_token=" + preferences.getString("auth_token", null));
   }
   
   @Override
@@ -84,12 +100,7 @@ public class MainActivity extends SherlockActivity implements TaskListener {
       
       @Override
       public boolean onMenuItemClick(MenuItem item) {
-        setSupportProgressBarIndeterminateVisibility(true);
-        item.setVisible(false);
-        
-        FeedTask feedTask = new FeedTask(MainActivity.this);
-        feedTask.execute("http://kent.herokuapp.com/feeds.json?auth_token=" + preferences.getString("auth_token", null));
-        
+        loadFeeds();
         return false;
       }
     });

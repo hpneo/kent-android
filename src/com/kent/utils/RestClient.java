@@ -25,6 +25,7 @@ public class RestClient {
 
   private ArrayList <NameValuePair> params;
   private ArrayList <NameValuePair> headers;
+  private ArrayList <String> errors;
 
   private String url;
 
@@ -43,6 +44,10 @@ public class RestClient {
 
   public int getResponseCode() {
     return responseCode;
+  }
+  
+  public ArrayList<String> getErrors() {
+    return errors;
   }
 
   public RestClient(String url)
@@ -139,9 +144,11 @@ public class RestClient {
 
     } catch (ClientProtocolException e)  {
       client.getConnectionManager().shutdown();
+      this.errors.add(e.getMessage());
       e.printStackTrace();
     } catch (IOException e) {
       client.getConnectionManager().shutdown();
+      this.errors.add(e.getMessage());
       e.printStackTrace();
     }
   }

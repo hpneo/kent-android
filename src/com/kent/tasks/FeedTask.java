@@ -16,6 +16,7 @@ import android.os.AsyncTask;
 
 public class FeedTask extends AsyncTask<String, Void, String> {
   private TaskListener activityCaller;
+  private RestClient client;
   
   public FeedTask(TaskListener activityCaller) {
     this.activityCaller = activityCaller;
@@ -56,11 +57,19 @@ public class FeedTask extends AsyncTask<String, Void, String> {
       } catch (JSONException e1) {
         activityCaller.onTaskError(new Error("json_error", "An error occured while fetching the data"));
       }
+    } catch(Exception e2) {
+      if (client.getErrors().size() > 0) {
+        activityCaller.onTaskError(new Error("internal_error", client.getErrors().get(client.getErrors().size() - 1)));
+      }
+      
+      if (! client.getErrorMessage().equals(null)) {
+        activityCaller.onTaskError(new Error("internal_error", client.getErrorMessage()));
+      }
     }
   }
   
   private String loadFromNetwork(String url) throws Exception {
-    RestClient client = new RestClient(url);
+    client = new RestClient(url);
     client.Execute(RequestMethod.GET);
     
     return client.getResponse();
