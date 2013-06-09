@@ -18,7 +18,6 @@ public class PostsPagerAdapter extends FragmentStatePagerAdapter {
   @Override
   public Fragment getItem(int position) {
     PostFragment fragment = PostFragment.newInstance(this.posts.get(position));
-    fragment.content_layout = this.content_layout;
     return fragment;
   }
 

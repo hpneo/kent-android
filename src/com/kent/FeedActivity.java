@@ -16,6 +16,7 @@ import com.kent.models.Error;
 import com.kent.models.Feed;
 import com.kent.models.Post;
 import com.kent.tasks.PostTask;
+import com.kent.utils.CachedData;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -56,28 +57,38 @@ public class FeedActivity extends SherlockFragmentActivity implements TaskListen
     
     this.viewPagerFeedPosts = (ViewPager) this.findViewById(R.id.viewPagerFeedPosts);
     
-    String content_layout = "{{post_content}}";
-    
-    try {
-      InputStream input = getAssets().open("html/post_content.html");
-      int size = input.available();
-      
-      byte[] buffer = new byte[size];
-      input.read(buffer);
-      input.close();
-      
-      content_layout = new String(buffer);
-      
-    } catch (IOException e) {
+    if (!CachedData.hasString("post_content_layout")) {
+      try {
+        InputStream input = getAssets().open("html/post_content.html");
+        int size = input.available();
+        
+        byte[] buffer = new byte[size];
+        input.read(buffer);
+        input.close();
+        
+        CachedData.setString("post_content_layout", new String(buffer));
+      } catch (IOException e) {
+        CachedData.setString("post_content_layout", "{{post_content}}");
+      }
     }
     
     this.viewPagerFeedPostsAdapter = new PostsPagerAdapter(getSupportFragmentManager());
     this.viewPagerFeedPostsAdapter.posts = new ArrayList<Post>();
-    this.viewPagerFeedPostsAdapter.content_layout = content_layout;
+    this.viewPagerFeedPostsAdapter.content_layout = CachedData.getString("post_content_layout");
     
     this.viewPagerFeedPosts.setAdapter(this.viewPagerFeedPostsAdapter);
+  }
+  
+  @Override
+  protected void onStart() {
+    if (CachedData.get("posts") == null) {
+      loadPosts();
+    }
+    else {
+      populatePostAdapter();
+    }
     
-    loadPosts();
+    super.onStart();
   }
   
   private void loadPosts() {
@@ -85,8 +96,15 @@ public class FeedActivity extends SherlockFragmentActivity implements TaskListen
     if (refreshAction != null) {
       refreshAction.setVisible(false);
     }
+    
     PostTask postTask = new PostTask(this);
     postTask.execute("http://kent.herokuapp.com/feeds/" + feed.id + "/posts.json?only_unread=true&auth_token=" + preferences.getString("auth_token", null));
+  }
+  
+  @SuppressWarnings("unchecked")
+  private void populatePostAdapter() {
+    this.viewPagerFeedPostsAdapter.posts = (ArrayList<Post>) CachedData.get("posts");
+    this.viewPagerFeedPostsAdapter.notifyDataSetChanged();
   }
   
   public Post currentPost() {
@@ -99,6 +117,8 @@ public class FeedActivity extends SherlockFragmentActivity implements TaskListen
     refreshAction = menu.add("Refresh");
     refreshAction.setIcon(R.drawable.ic_action_refresh);
     refreshAction.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+    refreshAction.setVisible(false);
+    
     refreshAction.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
       
       @Override
@@ -135,6 +155,7 @@ public class FeedActivity extends SherlockFragmentActivity implements TaskListen
     menuAction.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
     
     menuAction.add("Mark all as read");
+    menuAction.add("Mark as unread");
     
     return super.onCreateOptionsMenu(menu);
   }
@@ -153,8 +174,10 @@ public class FeedActivity extends SherlockFragmentActivity implements TaskListen
   @Override
   @SuppressWarnings("unchecked")
   public void onTaskCompleted(Object result) {
-    this.viewPagerFeedPostsAdapter.posts = (ArrayList<Post>) result;
-    this.viewPagerFeedPostsAdapter.notifyDataSetChanged();
+    ArrayList<Post> postsList = (ArrayList<Post>) result;
+    CachedData.set("posts", postsList);
+    
+    populatePostAdapter();
     
     refreshAction.setVisible(true);
     setSupportProgressBarIndeterminateVisibility(false);

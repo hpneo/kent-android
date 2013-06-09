@@ -13,6 +13,7 @@ import com.kent.listeners.FeedItemClickListener;
 import com.kent.models.Error;
 import com.kent.models.Feed;
 import com.kent.tasks.FeedTask;
+import com.kent.utils.CachedData;
 
 import android.os.Bundle;
 import android.widget.ListView;
@@ -47,15 +48,14 @@ public class MainActivity extends SherlockActivity implements TaskListener {
   
   @Override
   protected void onStart() {
-    this.feedItemAdapter = new FeedItemAdapter(this, R.layout.list_item_feed, new ArrayList<Feed>());
-    this.feedItemAdapter.setNotifyOnChange(true);
-    
-    if (!this.listViewfeedList.equals(null)) {
-      this.listViewfeedList.setAdapter(feedItemAdapter);
-      this.listViewfeedList.setOnItemClickListener(new FeedItemClickListener());
+    CachedData.set("posts", null);
+    if (CachedData.get("feeds") == null) {
+      loadFeeds();
+    }
+    else {
+      populateFeedAdapter();
     }
     
-    loadFeeds();
     super.onStart();
   }
   
@@ -63,11 +63,17 @@ public class MainActivity extends SherlockActivity implements TaskListener {
     setContentView(R.layout.activity_main);
     
     this.listViewfeedList = (ListView) this.findViewById(R.id.feedList);
+    this.feedItemAdapter = new FeedItemAdapter(this, R.layout.list_item_feed, new ArrayList<Feed>());
+    this.feedItemAdapter.setNotifyOnChange(true);
+
+    if (!this.listViewfeedList.equals(null)) {
+      this.listViewfeedList.setAdapter(feedItemAdapter);
+      this.listViewfeedList.setOnItemClickListener(new FeedItemClickListener());
+    }
     
     this.actionBar = this.getSupportActionBar();
     this.actionBar.setTitle("KENT");
     this.actionBar.setHomeButtonEnabled(true);
-    // this.actionBar.setDisplayHomeAsUpEnabled(true); // Only for children activities 
     this.actionBar.setDisplayShowHomeEnabled(true);
     
     this.setSupportProgressBarIndeterminateVisibility(false);
@@ -89,12 +95,27 @@ public class MainActivity extends SherlockActivity implements TaskListener {
     FeedTask feedTask = new FeedTask(this);
     feedTask.execute("http://kent.herokuapp.com/feeds.json?auth_token=" + preferences.getString("auth_token", null));
   }
+
+  @SuppressWarnings("unchecked")
+  private void populateFeedAdapter() {
+    this.feedItemAdapter.clear();
+    ArrayList<Feed> feedList = (ArrayList<Feed>) CachedData.get("feeds");
+    
+    for (Feed feed : feedList) {
+      this.feedItemAdapter.add(feed);
+    }
+    
+    if (refreshAction != null) {
+      refreshAction.setVisible(true);
+    }
+  }
   
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     refreshAction = menu.add("Refresh");
     refreshAction.setIcon(R.drawable.ic_action_refresh);
     refreshAction.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+    refreshAction.setVisible(true);
     
     refreshAction.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
       
@@ -108,15 +129,6 @@ public class MainActivity extends SherlockActivity implements TaskListener {
     MenuItem addAction = menu.add("Add");
     addAction.setIcon(R.drawable.ic_action_add);
     addAction.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-    
-//    SubMenu subMenu1 = menu.addSubMenu("Action Item");
-//    subMenu1.add("Sample");
-//    subMenu1.add("Menu");
-//    subMenu1.add("Items");
-//
-//    MenuItem subMenu1Item = subMenu1.getItem();
-//    subMenu1Item.setIcon(R.drawable.refresh);
-//    subMenu1Item.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
 
     return super.onCreateOptionsMenu(menu);
   }
@@ -125,13 +137,10 @@ public class MainActivity extends SherlockActivity implements TaskListener {
   @SuppressWarnings("unchecked")
   public void onTaskCompleted(Object result) {
     ArrayList<Feed> feedList = (ArrayList<Feed>) result;
+    CachedData.set("feeds", feedList);
+    
+    populateFeedAdapter();
 
-    this.feedItemAdapter.clear();
-    
-    for (Feed feed : feedList) {
-      this.feedItemAdapter.add(feed);
-    }
-    
     refreshAction.setVisible(true);
     setSupportProgressBarIndeterminateVisibility(false);
   }

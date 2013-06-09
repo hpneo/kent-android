@@ -7,9 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.kent.models.Post;
+import com.kent.utils.CachedData;
 
 public class PostFragment extends SherlockFragment {
   public Post post = null;
@@ -46,8 +48,10 @@ public class PostFragment extends SherlockFragment {
       textViewPostTitle.setText(this.post.title);
       textViewPostAuthor.setText(this.post.author);
       
-      String content = content_layout.replace("{{post_content}}", this.post.description);
-      webViewPostContent.loadDataWithBaseURL("", content, "text/html", "utf-8", "");
+      if (CachedData.hasString("post_content_layout")) {
+        String content = CachedData.getString("post_content_layout").replace("{{post_content}}", this.post.description);
+        webViewPostContent.loadDataWithBaseURL("", content, "text/html", "utf-8", "");
+      }
     }
     
     return view;
