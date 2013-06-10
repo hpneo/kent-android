@@ -118,6 +118,11 @@ public class FeedActivity extends SherlockFragmentActivity implements TaskListen
     readTask.execute("http://kent.herokuapp.com/posts/" + post.id + "/mark_as_read.json?auth_token=" + preferences.getString("auth_token", null));
   }
   
+  private void markAsUnread(Post post) {
+    ReadTask readTask = new ReadTask();
+    readTask.execute("http://kent.herokuapp.com/posts/" + post.id + "/mark_as_unread.json?auth_token=" + preferences.getString("auth_token", null));
+  }
+  
   public Post currentPost() {
     Post post = this.viewPagerFeedPostsAdapter.posts.get(this.viewPagerFeedPosts.getCurrentItem());
     return post;
@@ -166,7 +171,16 @@ public class FeedActivity extends SherlockFragmentActivity implements TaskListen
     menuAction.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
     
     menuAction.add("Mark all as read");
-    menuAction.add("Mark as unread");
+    menuAction.add("Mark as unread").setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+
+      @Override
+      public boolean onMenuItemClick(MenuItem item) {
+        markAsUnread(currentPost());
+        
+        return false;
+      }
+      
+    });
     
     return super.onCreateOptionsMenu(menu);
   }
