@@ -16,6 +16,7 @@ import com.kent.models.Error;
 import com.kent.models.Feed;
 import com.kent.models.Post;
 import com.kent.tasks.PostTask;
+import com.kent.tasks.ReadTask;
 import com.kent.utils.CachedData;
 
 import android.content.Intent;
@@ -25,7 +26,7 @@ import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
 import android.widget.Toast;
 
-public class FeedActivity extends SherlockFragmentActivity implements TaskListener {
+public class FeedActivity extends SherlockFragmentActivity implements TaskListener, ViewPager.OnPageChangeListener {
   public ActionBar actionBar = null;
   private ViewPager viewPagerFeedPosts = null;
   public MenuItem refreshAction = null;
@@ -77,6 +78,7 @@ public class FeedActivity extends SherlockFragmentActivity implements TaskListen
     this.viewPagerFeedPostsAdapter.content_layout = CachedData.getString("post_content_layout");
     
     this.viewPagerFeedPosts.setAdapter(this.viewPagerFeedPostsAdapter);
+    this.viewPagerFeedPosts.setOnPageChangeListener(this);
   }
   
   @Override
@@ -105,6 +107,15 @@ public class FeedActivity extends SherlockFragmentActivity implements TaskListen
   private void populatePostAdapter() {
     this.viewPagerFeedPostsAdapter.posts = (ArrayList<Post>) CachedData.get("posts");
     this.viewPagerFeedPostsAdapter.notifyDataSetChanged();
+    
+    if (this.viewPagerFeedPostsAdapter.posts.size() > 0) {
+      markAsRead(this.viewPagerFeedPostsAdapter.posts.get(0));
+    }
+  }
+  
+  private void markAsRead(Post post) {
+    ReadTask readTask = new ReadTask();
+    readTask.execute("http://kent.herokuapp.com/posts/" + post.id + "/mark_as_read.json?auth_token=" + preferences.getString("auth_token", null));
   }
   
   public Post currentPost() {
@@ -198,5 +209,21 @@ public class FeedActivity extends SherlockFragmentActivity implements TaskListen
     
     refreshAction.setVisible(true);
     setSupportProgressBarIndeterminateVisibility(false);
+  }
+
+  @Override
+  public void onPageScrollStateChanged(int position) {
+  }
+
+  @Override
+  public void onPageScrolled(int arg0, float arg1, int arg2) {
+  }
+
+  @Override
+  public void onPageSelected(int position) {
+    if (this.viewPagerFeedPostsAdapter.posts != null && this.viewPagerFeedPostsAdapter.posts.size() > position) {
+      Post currentPost = this.viewPagerFeedPostsAdapter.posts.get(position);
+      this.markAsRead(currentPost);
+    }
   }
 }

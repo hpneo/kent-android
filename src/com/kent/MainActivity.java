@@ -1,3 +1,4 @@
+
 package com.kent;
 
 import java.util.ArrayList;
@@ -6,6 +7,7 @@ import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.SubMenu;
 import com.actionbarsherlock.view.Window;
 import com.kent.adapters.FeedItemAdapter;
 import com.kent.interfaces.TaskListener;
@@ -25,6 +27,7 @@ public class MainActivity extends SherlockActivity implements TaskListener {
   public ActionBar actionBar = null;
   public ListView listViewfeedList = null;
   public MenuItem refreshAction = null;
+  public SubMenu menuAction = null;
   public SharedPreferences preferences;
   
   public FeedItemAdapter feedItemAdapter = null;
@@ -129,6 +132,12 @@ public class MainActivity extends SherlockActivity implements TaskListener {
     MenuItem addAction = menu.add("Add");
     addAction.setIcon(R.drawable.ic_action_add);
     addAction.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+    
+    menuAction = menu.addSubMenu("Menu");
+    menuAction.getItem().setIcon(R.drawable.ic_action_menu);
+    menuAction.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+    
+    menuAction.add("Mark all as read");
 
     return super.onCreateOptionsMenu(menu);
   }
